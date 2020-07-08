@@ -5,7 +5,8 @@
 #include <string.h>
 #define BUFFSIZE 1024
 
-void CSV_read(const char* filename) {
+
+void CSV_read(const char* filename) {//使わない
 	FILE* fp;
 	int data[100][10];
 	int i = 0;
@@ -59,7 +60,7 @@ void CSV_read(const char* filename) {
 		}
 	}
 }
-void ini_read(const char* filename, int data[100][10]) {
+void ini_read(const char* filename, int data[100][10]) {//iniファイルを読み込んでマップにデータを入れる
 	int i, j;
 	char currentDirectory[CHARBUFF];
 	getCurrentDirectory(currentDirectory);
@@ -75,7 +76,7 @@ void ini_read(const char* filename, int data[100][10]) {
 		}
 	}
 }
-void ini_write(const char* filename, int data[100][10]) {
+void ini_write(const char* filename, int data[100][10]) {//iniファイルに作ったマップデータを入れる
 	if (filename != "stage.ini") {
 		int i, j;
 		char currentDirectory[CHARBUFF];
@@ -93,7 +94,7 @@ void ini_write(const char* filename, int data[100][10]) {
 		}
 	}
 }
-bool save_map(int num,const char* filename, int data[100][10]) {
+bool save_map(int num,const char* filename, int data[100][10]) {//ini_writeを使ってマップデータを保存しそのファイル名も別ファイルに保存する
 	bool flag = true;
 	if (filename == "savefile" || filename == "stage") {
 		flag = false;
@@ -114,7 +115,7 @@ bool save_map(int num,const char* filename, int data[100][10]) {
 	}
 	return flag;
 }
-void load_map(int num,int data[100][10]) {
+void load_map(int num,int data[100][10]) {//ファイル名をsavefile.iniからとってきてそのファイル名の情報をロードする
 	char filename[CHARBUFF];
 	char currentDirectory[CHARBUFF];
 	getCurrentDirectory(currentDirectory);
@@ -128,7 +129,7 @@ void load_map(int num,int data[100][10]) {
 	sprintf_s(filename, "%s%s", filename, ".ini");
 	ini_read(filename, data);
 }
-int param_init(const char* section, const char* keyword) {
+int param_init(const char* section, const char* keyword) {//パラメーターを初期化する
 	char currentDirectory[CHARBUFF];
 	getCurrentDirectory(currentDirectory);
 	char settingFile[CHARBUFF];

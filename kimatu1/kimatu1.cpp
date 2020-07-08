@@ -22,7 +22,7 @@ stage* new_stage = (stage*)malloc(sizeof(stage));
 character c1;
 command* cd= (command*)malloc(sizeof(command));
 
-void processA(stage* a) {
+void processA(stage* a) {//キー入力
 	while (cd->prev_state!=100){
 		noecho();
 		cbreak();
@@ -37,10 +37,10 @@ void processA(stage* a) {
 #endif
 	}
 }
-void processB() {
+void processB() {//選択画面
 	cd->load_mode = false;
 	while (cd->mode == 0) {
-		if (cd->load_mode == false) {
+		if (cd->load_mode == false) {//モードの選択（作るを押すとロードモードに切り替わる）
 			start_color();
 			init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 			mvaddstr(10, 50, "作る");
@@ -64,11 +64,11 @@ void processB() {
 #ifdef USEMUTEX
 			WaitForSingleObject(threadMutex, INFINITE);
 #endif
-			if (cd->key == KEY_UP  ) {
+			if (cd->key == KEY_UP  ) {//カーソルを上に移動させる
 				if (cd->mode_select > 0) {
 					cd->mode_select = (cd->mode_select - 1) % 3;
 				}
-				else {
+				else {//一番上だけ下に移る
 					cd->mode_select = cd->mode_select + 2;
 				}
 			}
@@ -77,27 +77,27 @@ void processB() {
 			}
 			else if (cd->key == 'a') {
 				if (cd->mode_select == 0) {
-					cd->prev_state = 100;
+					cd->prev_state = 100;//キー操作終了
 					cd->mode = cd->mode_select + 1;
 				}
 				else if(cd->mode_select == 1){
 					cd->mode_select = 0;
-					cd->load_mode = true;
+					cd->load_mode = true;//ロードモードに移る
 					erase();
 				}
 				else {
-					cd->prev_state = 100;
-					cd->mode = cd->mode_select + 1;
+					cd->prev_state = 100;//キー操作終了
+					cd->mode = cd->mode_select + 1;//説明書に移動
 				}
 			}
-			cd->key = 0;
+			cd->key = 0;//キーをリセット
 #ifdef USEMUTEX
 			ReleaseMutex(threadMutex);
 #endif
 			// 画面を更新
 			refresh();
 		}
-		else {
+		else {//セーブファイルをロードする
 			mvaddstr(5, 50, "ロードするセーブを選んでください");
 			mvaddstr(10, 57, "セーブ１");
 			mvaddstr(15, 57, "セーブ２");
@@ -134,7 +134,7 @@ void processB() {
 				if (cd->mode_select > 0) {
 					cd->mode_select = (cd->mode_select - 1) % 4;
 				}
-				else {
+				else {//一番上だけ下に移動する
 					cd->mode_select = cd->mode_select + 3;
 				}
 			}
@@ -143,7 +143,7 @@ void processB() {
 			}
 			else if (cd->key == 'a') {
 				if (cd->mode_select != 3) {
-					load_map(cd->mode_select, st1->map);
+					load_map(cd->mode_select, st1->map);//セーブファイルからマップデータを読み込む
 					cd->mode_select=0;
 					cd->mode = 2;
 					cd->load_mode = false;
@@ -151,11 +151,11 @@ void processB() {
 				}
 				else {
 					erase();
-					cd->load_mode = false;
+					cd->load_mode = false;//選択画面に戻る
 					cd->mode_select = 0;
 				}
 			}
-			cd->key = 0;
+			cd->key = 0;//キーのリセット
 #ifdef USEMUTEX
 			ReleaseMutex(threadMutex);
 #endif
@@ -165,7 +165,7 @@ void processB() {
 	}
 }
 
-void processC(stage* a) {
+void processC(stage* a) {//遊ぶモード
 	while (cd->prev_state!=100) {
 		initscr();
 		make_stage(a);
@@ -183,7 +183,7 @@ void processC(stage* a) {
 		refresh();
 	}
 }
-void processD(stage* a) {
+void processD(stage* a) {//作るモード
 	cd->save_mode = false;
 	new_stage->goal_mode = false;
 	int i,j;
@@ -201,8 +201,8 @@ void processD(stage* a) {
 	}
 	a->map[80][6] = 12;
 	init_map(new_stage);
-	while (cd->prev_state!=100) {
-		if (cd->save_mode == TRUE) {
+	while (cd->prev_state!=100) {//キー操作とともに終了
+		if (cd->save_mode == TRUE) {//セーブモードに移る
 			start_color();
 			init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 			mvaddstr(5, 50, "どこにセーブしますか？");
@@ -251,7 +251,7 @@ void processD(stage* a) {
 				if (cd->mode_select != 3) {
 					endwin();
 					printf("コース名を入力してください。(.等の使用は不可)\n");
-					while (true) {
+					while (true) {//標準入力でファイル名と内容を保存する
 						scanf_s("%s", input, BUFFSIZE);
 						if (save_map(cd->mode_select,input, new_stage->map) == true) {
 							erase();
@@ -273,7 +273,7 @@ void processD(stage* a) {
 			// 画面を更新
 			refresh();
 		}
-		else {
+		else {//コースを作る
 			start_color();
 			init_pair(9, COLOR_WHITE, COLOR_WHITE);	// 色1 は白地に白文字
 			attrset(COLOR_PAIR(9));			// 色1 を使う
@@ -284,6 +284,7 @@ void processD(stage* a) {
 					}
 				}
 			}
+			//各ブロックの色の説明
 			attrset(COLOR_PAIR(1));			// 色1 を使う
 			mvaddstr(3, 10, " ");
 			attrset(COLOR_PAIR(0));			// 色1 を使う
@@ -315,7 +316,7 @@ void processD(stage* a) {
 #ifdef USEMUTEX
 			WaitForSingleObject(threadMutex, INFINITE);
 #endif
-			make_map(cd->key, a);
+			make_map(cd->key, a);//キー操作を反映させる
 			if (cd->key == 's') {
 				erase();
 				cd->save_mode = true;
@@ -343,17 +344,19 @@ void threadSample3(LPVOID data) {
 }
 
 int main(void) {
+	//初期化
 	cd->mode = param_init("command", "mode");
 	cd->mode_select = param_init("command", "mode_select");
 	cd->key = param_init("command", "key");
 	add_dot();
 	initscr();
 	cd->prev_state = param_init("command", "prev_state");
+	//スレッドの準備
 	HANDLE threadHandler[NUMTHREAD];
 	DWORD threadID[NUMTHREAD];
 	while (true) {
 		cd->mode = param_init("command", "mode");
-		while (cd->mode == 0) {
+		while (cd->mode == 0) {//選択モード
 			threadMutex = CreateMutex(NULL, FALSE, NULL);//ミューテックス生成
 			threadHandler[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample, (LPVOID)st1, 0, &threadID[0]);
 			threadHandler[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample1, NULL, 0, &threadID[1]);
@@ -366,7 +369,7 @@ int main(void) {
 			erase();
 			cd->prev_state = param_init("command", "prev_state");
 		}
-		while (cd->mode == 1) {
+		while (cd->mode == 1) {//作るモード
 			threadMutex = CreateMutex(NULL, FALSE, NULL);//ミューテックス生成
 			threadHandler[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample, (LPVOID)st1, 0, &threadID[0]);
 			threadHandler[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample3, (LPVOID)new_stage, 0, &threadID[1]);
@@ -379,7 +382,8 @@ int main(void) {
 			cd->mode = param_init("command", "mode");
 			cd->prev_state = param_init("command", "prev_state");
 		}
-		while (cd->mode==2) {
+		while (cd->mode==2) {//遊ぶモード
+			//初期化
 			c1.x = param_init("character", "x");
 			c1.y=  param_init("character", "y");
 			c1.goal_flag = param_init("character", "goalflag");
@@ -400,8 +404,8 @@ int main(void) {
 			cd->mode = 3;
 			cd->prev_state = param_init("command", "prev_state");
 		}
-		while (cd->mode == 3) {
-			if (cd->mode_select == 2) {
+		while (cd->mode == 3) {//説明画面と遊ぶの結果
+			if (cd->mode_select == 2) {//操作説明からきた場合
 				while (cd->mode == 3) {
 					start_color();
 					init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
@@ -420,7 +424,7 @@ int main(void) {
 					}
 				}
 			}
-			else if (c1.goal_flag) {
+			else if (c1.goal_flag) {//遊ぶモードでゴールした場合
 				start_color();
 				init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 				mvaddstr(15, 60, "ステージクリア");
@@ -428,7 +432,7 @@ int main(void) {
 				refresh();
 				Sleep(3000);
 			}
-			else {
+			else {//遊ぶモードで落ちた場合
 				start_color();
 				init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 				mvaddstr(15, 60, "ゲームオーバー");

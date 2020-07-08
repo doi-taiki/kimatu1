@@ -5,35 +5,6 @@
 #include "game.h"
 
 #include "character.h"
-/*
-extern unsigned char background1[16][16];
-extern unsigned char background2[16][16];
-extern unsigned char N_brock[16][16];
-extern unsigned char Q_brock[16][16];
-extern unsigned char LdotU_N[16][16];
-extern unsigned char LdotU_A[16][16];
-extern unsigned char LdotD_N[16][16];
-extern unsigned char LdotD2_N[16][16];
-extern unsigned char LdotD_A[16][16];
-extern unsigned char LdotL_N[16][16];
-extern unsigned char LdotL2_N[16][16];
-extern unsigned char LdotL_A[16][16];
-extern unsigned char LdotR_N[16][16];
-extern unsigned char LdotR_A[16][16];
-extern unsigned char LdotR2_N[16][16];
-extern unsigned char Octarock[16][16];
-extern unsigned char Octarock2[16][16];
-extern unsigned char Sword1[16][16];
-extern unsigned char Sword2[16][16];
-extern unsigned char Sword3[16][16];
-extern unsigned char DarknutU[16][16];
-extern unsigned char DarknutD1[16][16];
-extern unsigned char DarknutD2[16][16];
-extern unsigned char DarknutL1[16][16];
-extern unsigned char DarknutL2[16][16];
-extern unsigned char Pole[16][16];
-extern unsigned char Pole_Ball[16][16];
-*/
 void make_character(unsigned char dot[16][16],extern character* c,stage* st) {
 	int i = 0;
 	int j = 0;
@@ -75,9 +46,9 @@ void make_character(unsigned char dot[16][16],extern character* c,stage* st) {
 		}
 	}
 }
-int key_operation(int key,int prev_state,character* c,stage* st) {
+int key_operation(int key,int prev_state,character* c,stage* st) {//キー操作でキャラクターを動かす
 	int state=prev_state;
-	switch (prev_state) {
+	switch (prev_state) {//キー操作が無かった場合、前の状態を保持する
 	case 0:
 		make_character(LdotU_N, c,st);
 		break;
@@ -119,8 +90,8 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 		break;
 	}
 	switch (key) {
-	case KEY_UP:
-		if (prev_state != 0) {
+	case KEY_UP://上が押された場合
+		if (prev_state != 0) {//状態を上向きにする
 			state = 0;
 			make_character(LdotU_N, c, st);
 		}
@@ -128,8 +99,8 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			state = 10;
 			make_character(LdotU2_N, c, st);
 		}
-		if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16],st)) {
-			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st)&& Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-15) / 16], state,st)) {
+		if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16],st)) {//ニマスのブロックが通り抜けられるかどうか
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st)&& Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-15) / 16], state,st)) {//ニマス先のブロックが上向き状態且つ蔦の場合は蔦を掴む
 			}else{
 				if (c->y < 30) {
 					c->y = c->y + 2;
@@ -141,8 +112,8 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 				}
 			}
 		}
-		else if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16],st)) {
-			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 15) / 16], state,st)) {
+		else if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16],st)) {//一マスのブロックが通り抜けられるかどうか
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 15) / 16], state,st)) {//一マス先のブロックが上向き状態且つ蔦の場合は蔦を掴む
 			}else{
 				if (c->y < 30) {
 					c->y++;
@@ -155,7 +126,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			}
 		}
 		break;
-	case KEY_DOWN:
+	case KEY_DOWN://当たり判定は上を押した時と同じ
 		if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16],st)) {
 			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16], state,st)) {
 			state=1;
@@ -187,7 +158,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			make_character(LdotD_N, c, st);
 		}
 		break;
-	case KEY_LEFT:
+	case KEY_LEFT://当たり判定は上を押した時と同じ
 		if (st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 1) / 16] > 9 || st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 16) / 16] > 9) {
 			c->goal_flag = true;
 			state = 100;
@@ -237,7 +208,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			}
 		}
 		break;
-	case KEY_RIGHT:
+	case KEY_RIGHT://当たり判定は上を押した時と同じ
 		if (st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16] > 9 || st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 16) / 16] > 9) {
 			c->goal_flag = true;
 			state = 100;
@@ -278,7 +249,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 		}
 		break;
 	case 'a':
-		switch (prev_state) {
+		switch (prev_state) {//剣の描画・当たり判定は当たり半手のある頂点4マスを調べる
 		case 0:
 			if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16])) {
 				st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
@@ -433,8 +404,8 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 	default:
 		break;
 	}
-	if (c->jump > 0) {
-		if (c->j_count > 0) {
+	if (c->jump > 0) {//ジャンプで上に上がる回数
+		if (c->j_count > 0) {//ジャンプの速度調整
 			c->j_count--;
 		}
 		else {
@@ -464,7 +435,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 				if (switch_change(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16]) || switch_change(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16])) {
 					st->on_off_switch = (st->on_off_switch + 1) % 2;
 				}
-				if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16]) ) {
+				if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16]) ) {//マップのy座標は一定の高さを保つので書き込みエラーは起こらない
 					st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
 					c->coin++;
 				}
@@ -477,8 +448,8 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			}
 		}
 	}
-	else if ((Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16],state,st))&& PassingCloud(st,c)) {
-		if (c->j_count > 0) {
+	else if ((Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16],state,st))&& PassingCloud(st,c)) {//落下処理
+		if (c->j_count > 0) {//落下速度調整
 			c->j_count--;
 		}
 		else {
@@ -504,7 +475,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 	}
 	return state;
 }
-void make_obj(int m,int n,unsigned char obj[16][16],stage* st,chtype on_off_color) {
+void make_obj(int m,int n,unsigned char obj[16][16],stage* st,chtype on_off_color) {//ブロックの種類に応じたドットを出力する
 	int i = 0;
 	int j = 0;
 	start_color();
@@ -550,7 +521,7 @@ void make_obj(int m,int n,unsigned char obj[16][16],stage* st,chtype on_off_colo
 		}
 	}
 }
-void make_sword(int m, int n, unsigned char obj[16][16], stage* st) {
+void make_sword(int m, int n, unsigned char obj[16][16], stage* st) {//剣を描画する
 	int i = 0;
 	int j = 0;
 	start_color();
@@ -588,7 +559,7 @@ void make_sword(int m, int n, unsigned char obj[16][16], stage* st) {
 		}
 	}
 }
-void make_stage(stage* st) {
+void make_stage(stage* st) {//マップのｘ座標とｙ座標から今画面上に出てるブロックを画面上に描画する
 	int i, j;
 	for (i = st->x / 16; i < (st->x + 119)/16+1; i++) {
 		for (j = st->y / 16; j < (st->y + 30)/16+1; j++) {
@@ -656,7 +627,7 @@ void make_stage(stage* st) {
 		}
 	}
 }
-void add_dot(void) {
+void add_dot(void) {//逆向きや反転したドットを加える
 	int i, j;
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 16; j++) {
@@ -669,9 +640,9 @@ void add_dot(void) {
 		}
 	}
 }
-void make_map(int key, stage* ns) {
+void make_map(int key, stage* ns) {//作るモードでマップを作成する
 	int i;
-	switch(key) {
+	switch(key) {//ゴールポールを動かさない時はカーソルを移動する
 	case KEY_UP:
 		if (ns->goal_mode == false) {
 			if (ns->y < 9) {
@@ -702,7 +673,7 @@ void make_map(int key, stage* ns) {
 		break;
 	case 'a':
 		if (ns->goal_mode == false) {
-			if (ns->map[ns->x][ns->y] < 10) {
+			if (ns->map[ns->x][ns->y] < 10) {//ゴールポールではない時
 				ns->map[ns->x][ns->y] = (ns->map[ns->x][ns->y] + 1) % 8;
 			}
 			else {
@@ -738,7 +709,7 @@ void make_map(int key, stage* ns) {
 		move((9 - ns->y) + 10, ns->x + 10);
 	}
 	else {
-		if (key == KEY_RIGHT) {
+		if (key == KEY_RIGHT) {//ゴールポールを右に移動する（移動したところは上塗り）
 			if (ns->x < 99) {
 				ns->map[ns->x][0] = 0;
 				ns->map[ns->x + 1][0] = 11;
@@ -758,7 +729,7 @@ void make_map(int key, stage* ns) {
 				ns->x++;
 			}
 		}
-		else if (key == KEY_LEFT) {
+		else if (key == KEY_LEFT) {//ゴールポールを左に移動する（移動したところは上塗り）
 			if (ns->x >20) {
 				ns->map[ns->x][0] = 0;
 				ns->map[ns->x - 1][0] = 11;
@@ -780,7 +751,7 @@ void make_map(int key, stage* ns) {
 		}
 	}
 }
-void init_map(stage* ns) {
+void init_map(stage* ns) {//一度マップモードから離れた時にもう一度描画し直す
 	int i, j;
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 	init_pair(1, COLOR_WHITE, COLOR_RED);	// 色1 は赤地に白文字
@@ -807,7 +778,7 @@ void init_map(stage* ns) {
 		}
 	}
 }
-bool Passing(int a,int state,stage* st) {
+bool Passing(int a,int state,stage* st) {//当たり判定
 	bool judge=false;
 	if (a == 0 || a == 3||a==4 || (a == 6 && st->on_off_switch == false) || (a == 7 && st->on_off_switch == true)) {
 		if (a == 3 && (state == 0||state==10)) {
@@ -818,14 +789,14 @@ bool Passing(int a,int state,stage* st) {
 	}
 	return judge;
 }
-bool PassingIby(int a,stage* st) {
+bool PassingIby(int a,stage* st) {//当たり判定（蔦を掴むとき）
 	bool judge = false;
 	if (a == 0 || a == 3||a==4|| (a == 6 && st->on_off_switch == false) || (a == 7 && st->on_off_switch == true)) {
 		judge = true;
 	}
 	return judge;
 }
-bool PassingCloud(stage* st,character* c) {
+bool PassingCloud(stage* st,character* c) {//当たり判定（雲に乗る時）
 	bool judge = true;
 	if (st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16] == 4 || st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16] == 4) {
 		if (st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16] != 4 && st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 15) / 16] != 4) {
@@ -834,14 +805,14 @@ bool PassingCloud(stage* st,character* c) {
 	}
 	return judge;
 }
-bool switch_change(int a) {
+bool switch_change(int a) {//ON/OFFスイッチを切り替える
 	bool judge = false;
 	if (a == 5) {
 		judge = true;
 	}
 	return judge;
 }
-bool Q_push(int a) {
+bool Q_push(int a) {//？ブロックを押す
 	bool judge = false;
 	if (a == 2) {
 		judge = true;
