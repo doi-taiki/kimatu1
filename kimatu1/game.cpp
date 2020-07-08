@@ -102,6 +102,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 		break;
 	case 7:
 		make_character(LdotD_A, c, st);
+		make_sword(c->x, c->y - 16, Sword4, st);
 		break;
 	case 8:
 		make_character(LdotL_A, c, st);
@@ -111,43 +112,128 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 		make_character(LdotR_A, c, st);
 		make_sword(c->x+16, c->y, Sword3, st);
 		break;
-
+	case 10:
+		make_character(LdotU2_N, c, st);
+		break;
 	default:
 		break;
 	}
 	switch (key) {
 	case KEY_UP:
-		state = 0;
-		make_character(LdotU_N, c, st);
+		if (prev_state != 0) {
+			state = 0;
+			make_character(LdotU_N, c, st);
+		}
+		else {
+			state = 10;
+			make_character(LdotU2_N, c, st);
+		}
+		if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16],st)) {
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st)&& Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-15) / 16], state,st)) {
+			}else{
+				if (c->y < 30) {
+					c->y = c->y + 2;
+				}
+				else {
+					if (st->y < 160) {
+						st->y = st->y + 2;
+					}
+				}
+			}
+		}
+		else if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16],st)) {
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 15) / 16], state,st)) {
+			}else{
+				if (c->y < 30) {
+					c->y++;
+				}
+				else {
+					if (st->y < 160) {
+						st->y++;
+					}
+				}
+			}
+		}
 		break;
 	case KEY_DOWN:
-		state = 1;
-		make_character(LdotD_N, c, st);
+		if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16],st)) {
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16], state,st)) {
+			state=1;
+			make_character(LdotD_N, c, st);
+			}else{
+				if (c->y > 26) {
+					c->y--;
+				}
+				else {
+					if (st->y > 10) {
+						st->y--;
+					}
+					else if (c->y > 1) {
+						c->y--;
+					}
+				}
+				if (prev_state != 0) {
+					state = 0;
+					make_character(LdotU_N, c, st);
+				}
+				else {
+					state = 10;
+					make_character(LdotU2_N, c, st);
+				}
+			}
+		}
+		else {
+			state = 1;
+			make_character(LdotD_N, c, st);
+		}
 		break;
 	case KEY_LEFT:
 		if (st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 1) / 16] > 9 || st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 16) / 16] > 9) {
 			c->goal_flag = true;
 			state = 100;
 		}
-		else if (st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 1) / 16] == 0 && st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 16) / 16] == 0) {
-			if (c->x > 30) {
-				c->x = c->x - 2;
-			}
-			else {
-				if (st->x > 0) {
-					st->x = st->x - 2;
-				}
-				else if (c->x > 0) {
+		else if (PassingIby(st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 1) / 16],st )&& PassingIby(st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 16) / 16],st)) {
+			if (Passing(st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x - 1) / 16][(st->y + c->y - 16) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 16) / 16], state,st)) {
+				if (c->x > 30) {
 					c->x = c->x - 2;
 				}
-			}
-			if (prev_state != 2) {
-				state = 2;
-				make_character(LdotL_N, c, st);
+				else {
+					if (st->x > 0) {
+						st->x = st->x - 2;
+					}
+					else if (c->x > 0) {
+						c->x = c->x - 2;
+					}
+				}
+				if (prev_state != 2) {
+					state = 2;
+					make_character(LdotL_N, c, st);
+				}
+				else {
+					state = 3;
+					make_character(LdotL2_N, c, st);
+				}
 			}
 			else {
-				state = 3;
-				make_character(LdotL2_N, c, st);
+				if (c->x > 30) {
+					c->x = c->x - 2;
+				}
+				else {
+					if (st->x > 0) {
+						st->x = st->x - 2;
+					}
+					else if (c->x > 0) {
+						c->x = c->x - 2;
+					}
+				}
+				if (prev_state != 0) {
+					state = 0;
+					make_character(LdotU_N, c, st);
+				}
+				else {
+					state = 10;
+					make_character(LdotU2_N, c, st);
+				}
 			}
 		}
 		break;
@@ -156,53 +242,189 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 			c->goal_flag = true;
 			state = 100;
 		}
-		else if (st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16] == 0 && st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 16) / 16] == 0) {
-			if (c->x < 70) {
-				c->x = c->x + 2;
+		else if (PassingIby(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16],st) && PassingIby(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 16) / 16],st)) {
+			if (Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x) / 16][(st->y + c->y - 16) / 16], state,st)&&Passing(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16], state,st) && Passing(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 16) / 16], state,st)) {
+				if (c->x < 70) {
+					c->x = c->x + 2;
+				}
+				else {
+					st->x = st->x + 2;
+				}
+				if (prev_state != 4) {
+					state = 4;
+					make_character(LdotR_N, c, st);
+				}
+				else {
+					state = 5;
+					make_character(LdotR2_N, c, st);
+				}
 			}
 			else {
-				st->x = st->x + 2;
-			}
-			if (prev_state != 4) {
-				state = 4;
-				make_character(LdotR_N, c, st);
-			}
-			else {
-				state = 5;
-				make_character(LdotR2_N, c, st);
+				if (c->x < 70) {
+					c->x = c->x + 2;
+				}
+				else {
+					st->x = st->x + 2;
+				}
+				if (prev_state != 0) {
+					state = 0;
+					make_character(LdotU_N, c, st);
+				}
+				else {
+					state = 10;
+					make_character(LdotU2_N, c, st);
+				}
 			}
 		}
 		break;
 	case 'a':
 		switch (prev_state) {
 		case 0:
+			if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y+15) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y+15) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
 			state = 6;
 			make_character(LdotU_A,c,st); 
 			make_sword(c->x, c->y-16, Sword2, st);
 			break;
 		case 1:
+			if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y -33) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y - 33) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 33) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 33) / 16] = 9;
+				c->coin++;
+			}
 			state = 7;
 			make_character(LdotD_A,c,st);
+			make_sword(c->x, c->y+16, Sword4, st);
 			break;
 		case 2 :
+			if (Q_push(st->map[(st->x + c->x-15) / 16][(st->y + c->y-1) / 16])) {
+				st->map[(st->x + c->x-15) / 16][(st->y + c->y-1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x -15) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x-15 ) / 16][(st->y + c->y - 15) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x ) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x ) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x ) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x ) / 16][(st->y + c->y - 15) / 16] = 9;
+				c->coin++;
+			}
 			state = 8;
 			make_character(LdotL_A,c,st);
 			make_sword(c->x-16, c->y, Sword1, st);
 			break;
 		case  3:
+			if (Q_push(st->map[(st->x + c->x - 15) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x - 15) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x - 15) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x - 15) / 16][(st->y + c->y - 15) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16] = 9;
+				c->coin++;
+			}
 			state = 8;
 			make_character(LdotL_A,c,st);
 			make_sword(c->x-16, c->y, Sword1, st);
 			break;
 		case 4:
+			if (Q_push(st->map[(st->x + c->x+16) / 16][(st->y + c->y-1) / 16])) {
+				st->map[(st->x + c->x+16) / 16][(st->y + c->y-1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x+16) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x+16) / 16][(st->y + c->y - 16) / 15] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 16) / 15] = 9;
+				c->coin++;
+			}
 			state = 9;
 			make_character(LdotR_A,c,st);
 			make_sword(c->x+16, c->y, Sword3, st);
 			break;
 		case 5:
+			if (Q_push(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x + 16) / 16][(st->y + c->y - 16) / 15] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 1) / 16])) {
+				st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 1) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 15) / 16])) {
+				st->map[(st->x + c->x + 32) / 16][(st->y + c->y - 16) / 15] = 9;
+				c->coin++;
+			}
 			state = 9;
 			make_character(LdotR_A,c,st);
 			make_sword(c->x+16, c->y , Sword3, st);
+			break;
+		case 10:
+			if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y + 15) / 16])) {
+				st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			else if (Q_push(st->map[(st->x + c->x + 15) / 16][(st->y + c->y + 15) / 16])) {
+				st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16] = 9;
+				c->coin++;
+			}
+			state = 6;
+			make_character(LdotU_A, c, st);
+			make_sword(c->x, c->y - 16, Sword2, st);
 			break;
 		default:
 			break;
@@ -218,7 +440,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 		else {
 			c->jump--;
 			c->j_count = c->j_count + 10;
-			if (st->map[(st->x + c->x) / 16][(st->y + c->y ) / 16] == 0 && st->map[(st->x + c->x + 15) / 16][(st->y + c->y ) / 16] == 0) {
+			if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y ) / 16] ,st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y ) / 16],st)) {
 				if (c->y <30) {
 					c->y = c->y + 2;
 				}
@@ -228,7 +450,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 					}
 				}
 			}
-			else if (st->map[(st->x + c->x) / 16][(st->y + c->y-1) / 16] == 0 && st->map[(st->x + c->x + 15) / 16][(st->y + c->y-1) / 16] == 0) {
+			else if (PassingIby(st->map[(st->x + c->x) / 16][(st->y + c->y-1) / 16],st) && PassingIby(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-1) / 16] ,st)) {
 				if (c->y < 30) {
 					c->y++;
 				}
@@ -239,12 +461,23 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 				}
 			}
 			else {
+				if (switch_change(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16]) || switch_change(st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16])) {
+					st->on_off_switch = (st->on_off_switch + 1) % 2;
+				}
+				if (Q_push(st->map[(st->x + c->x) / 16][(st->y + c->y) / 16]) ) {
+					st->map[(st->x + c->x) / 16][(st->y + c->y) / 16] = 9;
+					c->coin++;
+				}
+				else if (Q_push(st->map[(st->x + c->x+15) / 16][(st->y + c->y) / 16])){
+					st->map[(st->x + c->x + 15) / 16][(st->y + c->y) / 16] = 9;
+					c->coin++;
+				}
 				c->jump = 0;
 				c->j_count = 0;
 			}
 		}
 	}
-	else if (st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16] == 0 && st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16] == 0) {
+	else if ((Passing(st->map[(st->x + c->x) / 16][(st->y + c->y-17) / 16], state,st) && Passing(st->map[(st->x + c->x + 15) / 16][(st->y + c->y-17) / 16],state,st))&& PassingCloud(st,c)) {
 		if (c->j_count > 0) {
 			c->j_count--;
 		}
@@ -271,7 +504,7 @@ int key_operation(int key,int prev_state,character* c,stage* st) {
 	}
 	return state;
 }
-void make_obj(int m,int n,unsigned char obj[16][16],stage* st) {
+void make_obj(int m,int n,unsigned char obj[16][16],stage* st,chtype on_off_color) {
 	int i = 0;
 	int j = 0;
 	start_color();
@@ -301,6 +534,14 @@ void make_obj(int m,int n,unsigned char obj[16][16],stage* st) {
 			}
 			else if (obj[i][j] == 6) {
 				attrset(COLOR_PAIR(6));			// 色6 を使う
+			}
+			else if(obj[i][j] == 7){
+				if (on_off_color==COLOR_RED) {
+					attrset(COLOR_PAIR(3));			// 色6 を使う
+				}
+				else if (on_off_color == COLOR_BLUE) {
+					attrset(COLOR_PAIR(4));			// 色6 を使う
+				}
 			}
 			else {
 				attrset(COLOR_PAIR(0));
@@ -351,28 +592,67 @@ void make_stage(stage* st) {
 	int i, j;
 	for (i = st->x / 16; i < (st->x + 119)/16+1; i++) {
 		for (j = st->y / 16; j < (st->y + 30)/16+1; j++) {
-			switch (st->map[i][j]) {
-			case 0:
-				make_obj(i, j, background1, st);
-				break;
-			case 1:
-				make_obj(i,j,N_brock, st);
-				break;
-			case 2:
-				make_obj(i,j,Q_brock, st);
-				break;
-			case 10:
-				make_obj(i, j, Pole, st);
-				break;
-			case 11:
-				make_obj(i, j, N_brock , st);
-				break;
-			case 12:
-				make_obj(i, j, Pole_Ball, st);
-				break;
-			default:
-				break;
+			if (j < 10) {
+				switch (st->map[i][j]) {
+				case 0:
+					make_obj(i, j, background1, st,NULL);
+					break;
+				case 1:
+					make_obj(i, j, N_brock, st, NULL);
+					break;
+				case 2:
+					make_obj(i, j, Q_brock, st, NULL);
+					break;
+				case 3:
+					make_obj(i, j, Iby, st, NULL);
+					break;
+				case 4:
+					make_obj(i, j, Cloud, st, NULL);
+					break;
+				case 5:
+					if (st->on_off_switch) {
+						make_obj(i, j, ON_SWITCH, st, NULL);
+					}
+					else {
+						make_obj(i, j, OFF_SWITCH, st, NULL);
+					}
+					break;
+				case 6:
+					if (st->on_off_switch) {
+						make_obj(i, j, ON_BROCK, st, COLOR_RED);
+					}
+					else {
+						make_obj(i, j, OFF_BROCK, st, COLOR_RED);
+					}
+					break;
+				case 7:
+					if (st->on_off_switch) {
+						make_obj(i, j, OFF_BROCK, st, COLOR_BLUE);
+					}
+					else {
+						make_obj(i, j, ON_BROCK , st, COLOR_BLUE);
+					}
+					break;
+				case 8:
+					make_obj(i, j, Heart, st, NULL);
+					break;
+				case 9:
+					make_obj(i, j, Used_brock, st, NULL);
+					break;
+				case 10:
+					make_obj(i, j, Pole, st, NULL);
+					break;
+				case 11:
+					make_obj(i, j, N_brock, st, NULL);
+					break;
+				case 12:
+					make_obj(i, j, Pole_Ball, st, NULL);
+					break;
+				default:
+					break;
+				}
 			}
+			
 		}
 	}
 }
@@ -380,16 +660,17 @@ void add_dot(void) {
 	int i, j;
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 16; j++) {
+			LdotU2_N[i][j] = LdotU_N[i][15 - j];
 			LdotR_N[i][j] = LdotL_N[i][15 - j];
 			LdotR2_N[i][j] = LdotL2_N[i][15 - j];
 			LdotR_A[i][j] = LdotL_A[i][15 - j];
 			Sword3[i][j] = Sword1[i][15 - j];
+			Sword4[i][j] = Sword2[15-i][15 - j];
 		}
 	}
 }
 void make_map(int key, stage* ns) {
 	int i;
-	
 	switch(key) {
 	case KEY_UP:
 		if (ns->goal_mode == false) {
@@ -422,7 +703,7 @@ void make_map(int key, stage* ns) {
 	case 'a':
 		if (ns->goal_mode == false) {
 			if (ns->map[ns->x][ns->y] < 10) {
-				ns->map[ns->x][ns->y] = (ns->map[ns->x][ns->y] + 1) % 3;
+				ns->map[ns->x][ns->y] = (ns->map[ns->x][ns->y] + 1) % 8;
 			}
 			else {
 				ns->goal_mode = true;
@@ -438,12 +719,22 @@ void make_map(int key, stage* ns) {
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 	init_pair(1, COLOR_WHITE, COLOR_RED);	// 色1 は赤地に白文字
 	init_pair(2, COLOR_WHITE, COLOR_YELLOW);	// 色2 は黄地に白文字
+	init_pair(3, COLOR_WHITE, COLOR_GREEN);	// 色3 は緑地に白文字
+	init_pair(4, COLOR_WHITE, COLOR_WHITE);	// 色4 は白地に白文字
+	init_pair(5, COLOR_WHITE, COLOR_MAGENTA);	// 色5 はマゼンタ地に白文字
+	init_pair(6, COLOR_WHITE, COLOR_RED);	// 色6 は赤地に白文字
+	init_pair(7, COLOR_WHITE, COLOR_BLUE);	// 色7 は青地に白文字
 	init_pair(10, COLOR_WHITE, COLOR_WHITE);	// 色2 は黄地に白文字
 	init_pair(11, COLOR_YELLOW, COLOR_RED);	// 色2 は黄地に白文字
 	init_pair(12, COLOR_YELLOW, COLOR_GREEN);	// 色2 は黄地に白文字
 	if (ns->goal_mode == false) {
 		attrset(COLOR_PAIR(ns->map[ns->x][ns->y]));			// 色1 を使う
-		mvaddstr((9 - ns->y) + 10, ns->x + 10, " ");
+		if (ns->map[ns->x][ns->y] == 6) {
+			mvaddstr((9 - ns->y) + 10, ns->x + 10, "O");
+		}
+		else {
+			mvaddstr((9 - ns->y) + 10, ns->x + 10, " ");
+		}
 		move((9 - ns->y) + 10, ns->x + 10);
 	}
 	else {
@@ -494,13 +785,75 @@ void init_map(stage* ns) {
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);	// 色1 は黒地に白文字
 	init_pair(1, COLOR_WHITE, COLOR_RED);	// 色1 は赤地に白文字
 	init_pair(2, COLOR_WHITE, COLOR_YELLOW);	// 色2 は黄地に白文字
+	init_pair(3, COLOR_WHITE, COLOR_GREEN);	// 色3 は黄地に白文字
+	init_pair(4, COLOR_WHITE, COLOR_WHITE);	// 色4 は白地に白文字
+	init_pair(5, COLOR_WHITE, COLOR_MAGENTA);	// 色5 はマゼンタ地に白文字
+	init_pair(6, COLOR_WHITE, COLOR_RED);	// 色6 は赤地に白文字
+	init_pair(7, COLOR_WHITE, COLOR_BLUE);	// 色7 は青地に白文字
 	init_pair(10, COLOR_WHITE, COLOR_WHITE);	// 色2 は黄地に白文字
-	init_pair(11, COLOR_YELLOW, COLOR_YELLOW);	// 色2 は黄地に白文字
+	init_pair(11, COLOR_YELLOW, COLOR_RED);	// 色2 は黄地に白文字
+	init_pair(12, COLOR_YELLOW, COLOR_GREEN);	// 色2 は黄地に白文字
 	for (i = 0; i < 100; i++) {
 		for (j = 0; j < 10; j++) {
 			attrset(COLOR_PAIR(ns->map[i][j]));			// 色1 を使う
+			if (ns->map[i][j] == 6) {
+				mvaddstr((9 - ns->y) + 10, ns->x + 10, "O");
+			}
+			else {
+				mvaddstr((9 - ns->y) + 10, ns->x + 10, " ");
+			}
 			mvaddstr((9 - j) + 10, i + 10, " ");
 			move((9 - i) + 10, j + 10);
 		}
 	}
+}
+bool Passing(int a,int state,stage* st) {
+	bool judge=false;
+	if (a == 0 || a == 3||a==4 || (a == 6 && st->on_off_switch == false) || (a == 7 && st->on_off_switch == true)) {
+		if (a == 3 && (state == 0||state==10)) {
+		}
+		else {
+			judge = true;
+		}
+	}
+	return judge;
+}
+bool PassingIby(int a,stage* st) {
+	bool judge = false;
+	if (a == 0 || a == 3||a==4|| (a == 6 && st->on_off_switch == false) || (a == 7 && st->on_off_switch == true)) {
+		judge = true;
+	}
+	return judge;
+}
+bool PassingCloud(stage* st,character* c) {
+	bool judge = true;
+	if (st->map[(st->x + c->x) / 16][(st->y + c->y - 17) / 16] == 4 || st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 17) / 16] == 4) {
+		if (st->map[(st->x + c->x) / 16][(st->y + c->y - 15) / 16] != 4 && st->map[(st->x + c->x + 15) / 16][(st->y + c->y - 15) / 16] != 4) {
+			judge = false;
+		}
+	}
+	return judge;
+}
+bool switch_change(int a) {
+	bool judge = false;
+	if (a == 5) {
+		judge = true;
+	}
+	return judge;
+}
+bool Q_push(int a) {
+	bool judge = false;
+	if (a == 2) {
+		judge = true;
+	}
+	return judge;
+}
+void play_init(character* c, stage* st,command* cd) {
+	c->x = 0;
+	c->y = 22;
+	st->x = 0;
+	st->y = 10;
+	c->goal_flag = false;
+	st->on_off_switch = true;
+	c->coin = 0;
 }
