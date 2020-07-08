@@ -48,5 +48,4 @@ bool PassingIby(int,stage*);
 bool PassingCloud(stage*,character*);
 bool switch_change(int);
 bool Q_push(int a);
-void play_init(character*, stage*, command*);
 #endif

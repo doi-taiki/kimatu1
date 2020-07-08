@@ -343,16 +343,16 @@ void threadSample3(LPVOID data) {
 }
 
 int main(void) {
-	cd->mode = 0;
-	cd->mode_select = 0;
-	cd->key = 0;
+	cd->mode = param_init("command", "mode");
+	cd->mode_select = param_init("command", "mode_select");
+	cd->key = param_init("command", "key");
 	add_dot();
 	initscr();
-	cd->prev_state = 0;
+	cd->prev_state = param_init("command", "prev_state");
 	HANDLE threadHandler[NUMTHREAD];
 	DWORD threadID[NUMTHREAD];
 	while (true) {
-		cd->mode = 0;
+		cd->mode = param_init("command", "mode");
 		while (cd->mode == 0) {
 			threadMutex = CreateMutex(NULL, FALSE, NULL);//ミューテックス生成
 			threadHandler[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample, (LPVOID)st1, 0, &threadID[0]);
@@ -364,7 +364,7 @@ int main(void) {
 			}
 			CloseHandle(threadMutex);
 			erase();
-			cd->prev_state = 0;
+			cd->prev_state = param_init("command", "prev_state");
 		}
 		while (cd->mode == 1) {
 			threadMutex = CreateMutex(NULL, FALSE, NULL);//ミューテックス生成
@@ -376,11 +376,17 @@ int main(void) {
 			}
 			CloseHandle(threadMutex);
 			erase();
-			cd->mode = 0;
-			cd->prev_state = 0;
+			cd->mode = param_init("command", "mode");
+			cd->prev_state = param_init("command", "prev_state");
 		}
 		while (cd->mode==2) {
-			play_init(&c1, st1,cd);
+			c1.x = param_init("character", "x");
+			c1.y=  param_init("character", "y");
+			c1.goal_flag = param_init("character", "goalflag");
+			c1.coin= param_init("character", "coin");
+			st1->x = param_init("stage", "x");
+			st1->y = param_init("stage", "y");
+			st1->on_off_switch = param_init("stage", "on_off_switch");
 			threadMutex = CreateMutex(NULL, FALSE, NULL);//ミューテックス生成
 			threadHandler[0] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample, (LPVOID)st1, 0, &threadID[0]);
 			threadHandler[1] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)threadSample2, (LPVOID)st1, 0, &threadID[1]);
@@ -392,7 +398,7 @@ int main(void) {
 			CloseHandle(threadMutex);
 			erase();
 			cd->mode = 3;
-			cd->prev_state = 0;
+			cd->prev_state = param_init("command", "prev_state");
 		}
 		while (cd->mode == 3) {
 			if (cd->mode_select == 2) {
@@ -409,8 +415,8 @@ int main(void) {
 					refresh();
 					cd->key = getch();
 					if (cd->key == 'a') {
-						cd->mode = 0;
-						cd->key = 0;
+						cd->mode = param_init("command", "mode");
+						cd->key = param_init("command", "key");
 					}
 				}
 			}
@@ -431,7 +437,7 @@ int main(void) {
 			}
 
 			erase();
-			cd->mode = 0;
+			cd->mode = param_init("command", "mode");
 		}
 	}
 	return 0;

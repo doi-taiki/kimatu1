@@ -128,3 +128,10 @@ void load_map(int num,int data[100][10]) {
 	sprintf_s(filename, "%s%s", filename, ".ini");
 	ini_read(filename, data);
 }
+int param_init(const char* section, const char* keyword) {
+	char currentDirectory[CHARBUFF];
+	getCurrentDirectory(currentDirectory);
+	char settingFile[CHARBUFF];
+	sprintf_s(settingFile, "%s\\%s", currentDirectory, "Initilize.ini");
+	return readInt(section, keyword, -1, settingFile);
+}

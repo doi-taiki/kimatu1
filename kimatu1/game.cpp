@@ -848,12 +848,3 @@ bool Q_push(int a) {
 	}
 	return judge;
 }
-void play_init(character* c, stage* st,command* cd) {
-	c->x = 0;
-	c->y = 22;
-	st->x = 0;
-	st->y = 10;
-	c->goal_flag = false;
-	st->on_off_switch = true;
-	c->coin = 0;
-}
